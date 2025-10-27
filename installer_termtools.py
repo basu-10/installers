@@ -1,3 +1,51 @@
+'''
+can be used as:
+(Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/basu-10/installers/main/installer_termtools.py').Content | python -
+
+The install_termtools.py script is a complete installer that downloads, installs, and configures TermTools for Windows with right-click context menu integration.
+
+Installs TermTools from GitHub to Program Files and sets up context menu.
+Run once as Administrator.
+
+'''
+
+
+'''
+flowchart TD
+    A[Start Script] --> B{Check Admin Privileges}
+    B -->|Not Admin| C[Re-launch with Admin Rights]
+    C --> D[Exit Current Process]
+    B -->|Is Admin| E[Initialize Variables]
+    
+    E --> F[Create Temp Directory]
+    F --> G[Download ZIP from GitHub]
+    G --> H[Extract ZIP to Temp]
+    
+    H --> I[Create Target Directory Structure]
+    I --> J{Target Directory Exists?}
+    J -->|Yes| K[Remove Existing Directory]
+    J -->|No| L[Create New Directory]
+    K --> L
+    
+    L --> M[Copy All Files from Extract to Target]
+    M --> N[Print Installation Success]
+    
+    N --> O[Setup Context Menu]
+    O --> P{add_to_context_menu.py exists?}
+    P -->|Yes| Q[Run Context Menu Setup]
+    P -->|No| R[Skip Context Menu Setup]
+    
+    Q --> S[Context Menu Script Checks Admin]
+    S --> T[Create Registry Entries]
+    T --> U[Set Menu Text: 'Run TermTools']
+    U --> V[Set Command Path]
+    
+    V --> W[Cleanup Temp Directory]
+    R --> W
+    W --> X[End Script]
+    
+'''
+
 import os, shutil, tempfile, zipfile, urllib.request, subprocess
 import ctypes, sys
 

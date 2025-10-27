@@ -11,38 +11,31 @@ Run once as Administrator.
 
 
 '''
-flowchart TD
-    A[Start Script] --> B{Check Admin Privileges}
-    B -->|Not Admin| C[Re-launch with Admin Rights]
-    C --> D[Exit Current Process]
-    B -->|Is Admin| E[Initialize Variables]
-    
-    E --> F[Create Temp Directory]
-    F --> G[Download ZIP from GitHub]
-    G --> H[Extract ZIP to Temp]
-    
-    H --> I[Create Target Directory Structure]
-    I --> J{Target Directory Exists?}
-    J -->|Yes| K[Remove Existing Directory]
-    J -->|No| L[Create New Directory]
-    K --> L
-    
-    L --> M[Copy All Files from Extract to Target]
-    M --> N[Print Installation Success]
-    
-    N --> O[Setup Context Menu]
-    O --> P{add_to_context_menu.py exists?}
-    P -->|Yes| Q[Run Context Menu Setup]
-    P -->|No| R[Skip Context Menu Setup]
-    
-    Q --> S[Context Menu Script Checks Admin]
-    S --> T[Create Registry Entries]
-    T --> U[Set Menu Text: 'Run TermTools']
-    U --> V[Set Command Path]
-    
-    V --> W[Cleanup Temp Directory]
-    R --> W
-    W --> X[End Script]
+1. Initial Setup & Security
+    Admin Check: Verifies if running with administrator privileges
+    Auto-Elevation: If not admin, re-launches itself with elevated permissions using ShellExecuteW
+    Exit: Original non-admin process exits after launching elevated version
+2. Configuration
+    Target Path: C:\Program Files\BasusTools\TermTools\
+3. Download & Extract
+    Download: Fetches ZIP from https://github.com/basu-10/termtools/archive/refs/heads/main.zip
+    Temp Directory: Creates temporary directory with prefix gh_install_
+    Extract: Unzips to temporary extraction directory
+4. Installation
+    Directory Structure: Creates C:\Program Files\BasusTools\TermTools\
+    Cleanup: Removes existing installation if present
+    File Copy: Copies all files and directories from extracted source to target
+    Preservation: Maintains directory structure and file permissions
+5. Context Menu Integration
+    Script Location: Looks for add_to_context_menu.py in installed location
+    Registry Modification: If found, runs the context menu setup script
+    Registry Keys Created:
+    HKEY_LOCAL_MACHINE\Software\Classes\Directory\Background\shell\TermTools
+    Command: "python.exe" "C:\Program Files\BasusTools\TermTools\TermTools.py" "%V"
+    Display Text: "Run TermTools"
+6. Cleanup
+    Temp Removal: Deletes temporary directory and all downloaded/extracted files
+    Error Handling: Uses ignore_errors=True for robust cleanup
     
 '''
 

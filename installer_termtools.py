@@ -1,6 +1,6 @@
 import os, shutil, tempfile, zipfile, urllib.request, subprocess
 
-REPO = "basu-10"     # e.g. "user/repo"
+REPO = "basu-10/termtools"     # e.g. "user/repo"
 BRANCH = "main"
 TARGETS = ["BasusTools", "TermTools"]
 
@@ -17,6 +17,7 @@ try:
     os.makedirs(extract_dir)
     with zipfile.ZipFile(zip_path) as z:
         z.extractall(extract_dir)
+    print("Extracted to", extract_dir)
 
     root = next(os.scandir(extract_dir)).path
 
@@ -32,7 +33,9 @@ try:
                 shutil.copytree(s, d, dirs_exist_ok=True)
             else:
                 shutil.copy2(s, d)
+    print("Installed to Program Files.")
 
+    print("Setting up context menu...")
     # run add_to_context_menu.py if found
     for t in TARGETS:
         py = os.path.join(program_files, t, "add_to_context_menu.py")
@@ -41,4 +44,5 @@ try:
             break
 
 finally:
+    print("Cleaning up...")
     shutil.rmtree(tempdir, ignore_errors=True)
